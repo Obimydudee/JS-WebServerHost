@@ -7,12 +7,14 @@ const { setTimeout } = require('timers');
 const port = 8989;
 
 const requestsInterval = 5000;
-const maxRequests = 250;
+const maxRequests = 50;
 const blockedIPs = new Set();
 const requestCounts = {};
 //#endregion
 
-http.createServer(function (request, response) {
+printCoolBanner();
+
+server = http.createServer(function (request, response) {
 
     var uri = url.parse(request.url).pathname
     var filename = path.join(process.cwd(), uri);
@@ -24,7 +26,8 @@ http.createServer(function (request, response) {
         response.writeHead(403, { "Content-Type": "text/plain"});
         response.write("Forbidden\n");
         response.end();
-        console.log(ConnectedUser + " is blocked | still knocking.");
+        request.destroy();
+        console.log("\x1b[31m" + ConnectedUser + " is blocked | still knocking.\x1b[0m");
         Log2File(ConnectedUser + " is blocked | still knocking.");
         return;
     }
@@ -36,12 +39,14 @@ http.createServer(function (request, response) {
         response.writeHead(403, { "Content-Type": "text/plain" });
         response.write("Forbidden\n");
         response.end();
-        console.log(ConnectedUser + " made too many requests. Redirecting..");
+        console.log("\x1b[33m" + ConnectedUser + " made too many requests. Redirecting..\x1b[0m");
         Log2File(ConnectedUser + " made too many requests. Redirecting..");
-        forwardRequest(request, response, "http://localhost/")
-        response.redi
+        request.socket.destroy();
+        //forwardRequest(request, null, "https://google.com/");
         return;
     }
+
+
 
     fs.exists(filename, function (exists) {
 
@@ -49,11 +54,11 @@ http.createServer(function (request, response) {
             response.writeHead(404, { "Content-Type": "text/plain" });
             response.write("404 Not Found\n");
             response.end();
-            console.log(request.socket.remoteAddress.toString() + " tried accessing: " + filename + " with response: " + response.statusCode);
+            console.log("\x1b[31m" + request.socket.remoteAddress.toString() + " tried accessing: " + filename + " with response: " + response.statusCode + "\npotential brute force attack?\x1b[0m");
             Log2File(request.socket.remoteAddress.toString() + " tried accessing: " + filename + " with response: " + response.statusCode + "\n\npotential brute force attack?");
             return;
         }
-        console.log(request.socket.remoteAddress.toString() + " accessed: " + filename + " with response: " + response.statusCode);
+        console.log("\x1b[36m" + request.socket.remoteAddress.toString() + " accessed: " + filename + " with response: " + response.statusCode + "\x1b[0m");
         Log2File(request.socket.remoteAddress.toString() + " accessed: " + filename + " with response: " + response.statusCode);
 
         if (fs.statSync(filename).isDirectory()) filename += 'index.html';
@@ -74,12 +79,45 @@ http.createServer(function (request, response) {
 }).listen(parseInt(port, 10));
 
 
-console.log("WebServerHost is now running at\n => http://localhost:" + port + "/\nCTRL + C to shutdown");
+const baseUrl = 'www.google.com';
+server.on('request', (req, res) => {
+  if (blockedIPs.has(server.ConnectedUser)){
+    var connector = http.request({
+      host: baseUrl,
+      path:'/',
+      method: 'GET',
+      headers: req.headers
+    }, (resp) => {
+      resp.pipe(res);
+    });
+  }
+});
+
+
+console.log("\x1b[32mWebServerHost is now running at\n => http://localhost:" + port + "/\nCTRL + C to shutdown\x1b[0m");
 Log2File("WebServerHost is now running at\n => http://localhost:" + port + "/\nCTRL + C to shutdown");
 
 
 //#region functions
 
+
+//prints said cool banner in magenta!
+function printCoolBanner() {
+  console.clear();
+  var banner = [
+    "\x1b[35m███╗   ██╗ ██████╗ ██████╗ ███████╗███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗\x1b[0m",
+    "\x1b[35m████╗  ██║██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗\x1b[0m",
+    "\x1b[35m██╔██╗ ██║██║   ██║██║  ██║█████╗  ███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝\x1b[0m",
+    "\x1b[35m██║╚██╗██║██║   ██║██║  ██║██╔══╝  ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══╝  ██╔══██╗\x1b[0m",
+    "\x1b[35m██║ ╚████║╚██████╔╝██████╔╝███████╗███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║\x1b[0m",
+    "\x1b[35m╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝\x1b[0m",
+    "\n\n"
+  ];
+  banner.forEach(function(entry) {
+    console.log(entry);
+  });
+
+}
 
   function blockUser(ip) {
     blockedIPs.add(ip);
