@@ -14,6 +14,43 @@ img {
 	position: relative;
 	top:-200px;
 }
+
+.button {
+	background-color: black;
+	border: none;
+	color: black;
+	display: inline-block;
+	font-size: 16px;
+	padding: 14px 200px;
+	text-align: center;
+	align-self: center;
+	border: 3px solid #FF0000;
+	border-radius: 12px;
+	transition-duration: 0.4s;
+
+}
+
+.button2 {
+	background-color: black;
+	border: none;
+	color: black;
+	display: inline-block;
+	font-size: 16px;
+	padding: 14px 200px;
+	text-align: center;
+	align-self: center;
+	border: 3px solid #FF0000;
+	border-radius: 12px;
+	top: 50px;
+	transition-duration: 0.4s;
+
+}
+
+.button:hover {
+	background-color: #750000;
+	color: white;
+}
+
 .loader {
 	margin-top: 100px;
 }
@@ -28,9 +65,10 @@ img {
     -moz-background-clip: text;
 	background-clip: text;
 	-webkit-background-clip: text;
-	-webkit-text-fill-color:#ff0000;
+	-webkit-text-fill-color:#fa7676;
 	background-size: 400% 400%;
 }
+
 
 .gradient-box{
 	border-image-slice: 1;

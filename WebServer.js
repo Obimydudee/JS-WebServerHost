@@ -61,7 +61,7 @@ server = http.createServer(function (request, response) {
         console.log("\x1b[36m" + request.socket.remoteAddress.toString() + " accessed: " + filename + " with response: " + response.statusCode + "\x1b[0m");
         Log2File(request.socket.remoteAddress.toString() + " accessed: " + filename + " with response: " + response.statusCode);
 
-        if (fs.statSync(filename).isDirectory()) filename += 'index.html';
+        if (fs.statSync(filename).isDirectory()) filename += 'index.php';
 
         fs.readFile(filename, "binary", function (err, file) {
             if (err) {
