@@ -1,3 +1,6 @@
+<?php
+    echo "Nig";
+?>
 <!DOCTYPE html>
 <html>
     <head>
