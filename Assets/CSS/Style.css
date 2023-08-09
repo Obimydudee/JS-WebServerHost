@@ -18,7 +18,7 @@ img {
 .button {
 	background-color: black;
 	border: none;
-	color: black;
+	color: white;
 	display: inline-block;
 	font-size: 16px;
 	padding: 14px 200px;
@@ -33,7 +33,7 @@ img {
 .button2 {
 	background-color: black;
 	border: none;
-	color: black;
+	color: white;
 	display: inline-block;
 	font-size: 16px;
 	padding: 14px 200px;
