@@ -24,7 +24,7 @@ img {
 	padding: 14px 200px;
 	text-align: center;
 	align-self: center;
-	border: 3px solid #FF0000;
+	border: 3px solid #ac40c2;
 	border-radius: 12px;
 	transition-duration: 0.4s;
 
@@ -39,7 +39,7 @@ img {
 	padding: 14px 200px;
 	text-align: center;
 	align-self: center;
-	border: 3px solid #FF0000;
+	border: 3px solid #ac40c2;
 	border-radius: 12px;
 	top: 50px;
 	transition-duration: 0.4s;
@@ -47,7 +47,7 @@ img {
 }
 
 .button:hover {
-	background-color: #750000;
+	background-color: #812e92;
 	color: white;
 }
 
@@ -65,7 +65,7 @@ img {
     -moz-background-clip: text;
 	background-clip: text;
 	-webkit-background-clip: text;
-	-webkit-text-fill-color:#fa7676;
+	-webkit-text-fill-color:#db76fa;
 	background-size: 400% 400%;
 }
 
