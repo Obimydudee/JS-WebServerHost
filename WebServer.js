@@ -16,6 +16,12 @@ printCoolBanner();
 
 server = http.createServer(function (request, response) {
 
+    if (path.normalize(decodeURI(request.url)) !== decodeURI(request.url)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
+    
     var uri = url.parse(request.url).pathname
     var filename = path.join(process.cwd(), uri);
     const ConnectedUser = request.socket.remoteAddress.toString();
@@ -23,15 +29,15 @@ server = http.createServer(function (request, response) {
 
     //my poorly crafted attempt at blocking layer 7 attacks..
     if (blockedIPs.has(ConnectedUser)) {
-        response.writeHead(403, { "Content-Type": "text/plain"});
-        response.write("Forbidden\n");
+        //response.writeHead(403, { "Content-Type": "text/plain"});
+        //response.write("Forbidden\n");
         response.end();
         request.destroy();
         console.log("\x1b[31m" + ConnectedUser + " is blocked | still knocking.\x1b[0m");
         Log2File(ConnectedUser + " is blocked | still knocking.");
         return;
     }
-
+    
     requestCounts[ConnectedUser] = (requestCounts[ConnectedUser] || 0) + 1;
 
     if (requestCounts[ConnectedUser] >= maxRequests) {
